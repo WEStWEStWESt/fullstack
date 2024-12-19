@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--suppress VulnerableLibrariesLocal -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -12,7 +13,7 @@
 	<artifactId>fullstack</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>fullstack</name>
-	<description>to fullstack progect</description>
+	<description>to fullstack project</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -46,6 +47,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
+            <version>42.7.4</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -63,6 +65,13 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.12.6</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
