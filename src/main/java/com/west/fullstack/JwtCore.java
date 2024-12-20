@@ -17,7 +17,9 @@ public class JwtCore {
     //  difference  !!!!!! new Date(System.currentTimeMillis() + lifetime))
     public String generateToken(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        return Jwts.builder().setSubject(userDetails.getUsername()).setIssuedAt(new Date())
+        return Jwts.builder()
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + lifetime))
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
     }

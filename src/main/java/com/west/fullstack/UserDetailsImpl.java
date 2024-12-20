@@ -16,14 +16,13 @@ public class UserDetailsImpl implements UserDetails {
     private String email;
     private String password;
 
-
-    /*public static UserDetailsImpl build(User user) {
+    public static UserDetailsImpl build(User user) {
         return new UserDetailsImpl(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword());
-    }*/
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
