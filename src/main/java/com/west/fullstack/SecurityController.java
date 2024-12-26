@@ -45,66 +45,37 @@ public class SecurityController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest signupRequest) {
-        if (userRepository.existsUserByName(signupRequest.getUsername())){
+
+        if (userRepository.existsUserByUsername(signupRequest.getUsername())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Choose different name");
         }
-        if (userRepository.existsUserByEmail(signupRequest.getEmail())){
+        if (userRepository.existsUserByEmail(signupRequest.getEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Choose different email");
         }
+
+        String hashedPassword = passwordEncoder.encode(signupRequest.getPassword());
 
         User user = new User();
         user.setUsername(signupRequest.getUsername());
         user.setEmail(signupRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
+        user.setPassword(hashedPassword);
         userRepository.save(user);
 
-        return ResponseEntity.ok("Success");
+        return ResponseEntity.ok("Success, baby");
     }
 
     @PostMapping("/signin")
     public ResponseEntity<?> signin(@RequestBody SigninRequest signinRequest) {
-        Authentication authentication = null;
+        Authentication authentication;
         try {
             authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(signinRequest.getUsername(), signinRequest.getPassword()));
-        }catch (BadCredentialsException e){
+        } catch (BadCredentialsException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtCore.generateToken(authentication);
+
         return ResponseEntity.ok(jwt);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -26,7 +26,11 @@ public class SecurityConfigurator {
 
     private UserService userService;
 
-    public SecurityConfigurator() {
+    public SecurityConfigurator() {}
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 
     @Autowired
@@ -45,7 +49,7 @@ public class SecurityConfigurator {
     }
 
     @Bean
-    public AuthenticationManagerBuilder authenticationManager(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+    public AuthenticationManagerBuilder configureAuthenticationManagerBuilder(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userService).passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder;
     }
@@ -61,7 +65,7 @@ public class SecurityConfigurator {
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/secured/user").fullyAuthenticated()
                         .anyRequest().permitAll())

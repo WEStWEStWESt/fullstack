@@ -23,8 +23,9 @@ public class TokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = null;
         String userName = null;
-        UserDetails userDetails = null;
-        UsernamePasswordAuthenticationToken auth = null;
+        UserDetails userDetails;
+        UsernamePasswordAuthenticationToken auth;
+
         try {
             String headerAuth = request.getHeader("Authorization");
             if (headerAuth != null && headerAuth.startsWith("Bearer ")) {

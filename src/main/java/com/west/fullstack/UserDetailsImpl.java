@@ -8,12 +8,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 @Data
-@AllArgsConstructor
+//@AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
+
     private Long id;
     private String username;
     private String email;
     private String password;
+
+    public UserDetailsImpl(Long id, String username, String email, String password) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 
     public static UserDetailsImpl build(User user) {
         return new UserDetailsImpl(
