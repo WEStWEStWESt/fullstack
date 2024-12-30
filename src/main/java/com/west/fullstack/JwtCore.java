@@ -1,7 +1,6 @@
 package com.west.fullstack;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -35,6 +34,6 @@ public class JwtCore {
 
     public String getNameFromJwt(String token) {
         return Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token)
-                .getPayload().toString();
+                .getPayload().getSubject();
     }
 }
