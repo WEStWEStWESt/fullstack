@@ -2,8 +2,6 @@ package com.west.fullstack;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-
 
 @Entity
 @Table(name = "users")

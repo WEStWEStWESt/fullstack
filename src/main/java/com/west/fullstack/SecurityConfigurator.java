@@ -1,5 +1,7 @@
 package com.west.fullstack;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,14 +23,12 @@ import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @EnableWebSecurity
+@NoArgsConstructor
 public class SecurityConfigurator {
 
     private TokenFilter tokenFilter;
 
     private UserService userService;
-
-    public SecurityConfigurator() {
-    }
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -46,7 +46,7 @@ public class SecurityConfigurator {
     }
 
     @Bean
-        public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
