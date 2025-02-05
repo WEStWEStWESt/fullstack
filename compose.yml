@@ -1,57 +1,93 @@
 networks:
   key-network:
     driver: bridge
+#version: '3.8'
+
 services:
-  key-postgresql:
-    image: postgres:14.5
-    container_name: postgres-db
+  postgres-db:
+    image: postgres:latest
+    container_name: my_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: your_database
     volumes:
-      - ~/key-app/volumes/postgresql/:/var/lib/postgresql/data/
-      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
-    environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=pass
-      - POSTGRES_HOST_AUTH_METHOD=trust
-      - POSTGRES_DB=key_db
-      - TZ=Asia/Almaty
+      - postgres_data:/var/lib/postgresql/data
     ports:
-      - '5432:5432'
-    networks:
-      - key-network
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "webcom", "-d", "key_db"]
-      interval: 10s
-      retries: 5
-      start_period: 10s
+      - "5432:5432"
 
-  key-pg_admin:
-    image: dpage/pgadmin4
-    container_name: pg-admin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: user
-      PGADMIN_DEFAULT_PASSWORD: pass
-    ports:
-      - '8700:80'
-    depends_on:
-      - key-postgresql
-    networks:
-      - key-network
-
-  key-app:
-    image: key-backend
-    container_name: key-app
+  backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
-    environment:
-      - _JAVA_OPTIONS=-Xmx4g -Xms2g
-      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://key-postgresql:5432/postgres
-    user: '${UID}:${GID}'
-    ports:
-      - '1360:1360'
+    container_name: fullstack
     depends_on:
-      key-postgresql:
-        condition: service_healthy
-    networks:
-      - key-network
+      - postgres-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/your_database
+      SPRING_DATASOURCE_USERNAME: your_username
+      SPRING_DATASOURCE_PASSWORD: your_password
+    ports:
+      - "8080:8080"
+volumes:
+  postgres_data:
+
+
+
+#      - networks:
+#          key-network:
+#            driver: bridge
+#        services:
+#          key-postgresql:
+#            image: postgres:14.5
+#            container_name: postgres-db
+#            volumes:
+#              - ~/key-app/volumes/postgresql/:/var/lib/postgresql/data/
+#              - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+#            environment:
+#              - POSTGRES_USER=postgres
+#              - POSTGRES_PASSWORD=root
+#              - POSTGRES_HOST_AUTH_METHOD=trust
+#              - POSTGRES_DB=key_db
+#              - TZ=Asia/Almaty
+#            ports:
+#              - '5432:5432'
+#            networks:
+#              - key-network
+#            healthcheck:
+#              test: [ "CMD", "pg_isready", "-U", "webcom", "-d", "key_db" ]
+#              interval: 10s
+#              retries: 5
+#              start_period: 10s
+#
+#          key-pg_admin:
+#            image: dpage/pgadmin4
+#            container_name: pg-admin
+#            environment:
+#              PGADMIN_DEFAULT_EMAIL: user
+#              PGADMIN_DEFAULT_PASSWORD: pass
+#            ports:
+#              - '8700:80'
+#            depends_on:
+#              - key-postgresql
+#            networks:
+#              - key-network
+#
+#          key-app:
+#            image: key-backend
+#            container_name: key-app
+#            build:
+#              context: .
+#              dockerfile: Dockerfile
+#            environment:
+#              - _JAVA_OPTIONS=-Xmx4g -Xms2g
+#              - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+#              - SPRING_DATASOURCE_URL=jdbc:postgresql://key-postgresql:5432/postgres
+#            user: '${UID}:${GID}'
+#            ports:
+#              - '1360:1360'
+#            depends_on:
+#              key-postgresql:
+#                condition: service_healthy
+#            networks:
+#              - key-network
