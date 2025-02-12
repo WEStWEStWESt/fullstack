@@ -1,37 +1,39 @@
 networks:
   key-network:
     driver: bridge
-#version: '3.8'
 
 services:
   postgres-db:
-    image: postgres:latest
+    image: postgres:17.2-alpine3.21
     container_name: my_postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: your_database
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - POSTGRES_DB=postgres_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - "5432:5432"
+    volumes:
+      - ~/postgres:/var/lib/postgres/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - key-network
+
+#  http://localhost:8100/login?next=/browser/
+#  PGADMIN+TESTCONTAINERS
 
   backend:
     build:
-      context: ./backend
       dockerfile: Dockerfile
     container_name: fullstack
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/postgres
     depends_on:
       - postgres-db
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/your_database
-      SPRING_DATASOURCE_USERNAME: your_username
-      SPRING_DATASOURCE_PASSWORD: your_password
     ports:
-      - "8080:8080"
-volumes:
-  postgres_data:
-
+      - "8001:8080"
+    networks:
+      - key-network
 
 
 #      - networks:

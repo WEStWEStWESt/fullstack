@@ -1,4 +1,4 @@
-FROM maven:latest AS stage1
+FROM maven:3.9.9 AS stage1
 WORKDIR /app
 COPY pom.xml /app
 RUN mvn dependency:resolve
